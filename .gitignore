@@ -1,0 +1,22 @@
+# OS / éditeurs
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Claude Code local settings
+.claude/
+
+# Secrets / configs locales (à ne JAMAIS commiter)
+*.local.toml
+*.local.json
+.env
+.env.*
+secrets/
+
+# Artefacts de build
+build/
+dist/
+*.log

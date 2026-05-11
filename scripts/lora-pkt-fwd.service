@@ -1,0 +1,18 @@
+[Unit]
+Description=LoRa SX1302 packet forwarder (Semtech UDP -> ChirpStack Gateway Bridge)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/sx1302_hal/packet_forwarder
+ExecStart=/home/pi/sx1302_hal/packet_forwarder/lora_pkt_fwd
+Restart=on-failure
+RestartSec=5
+# lora_pkt_fwd appelle ./reset_lgw.sh (qui utilise pinctrl + /dev/gpiomem)
+# et accède directement à /dev/spidev0.0 et /dev/i2c-1 : tourne en root pour
+# simplifier (alternative : ajouter des règles udev + cap_sys_rawio).
+User=root
+
+[Install]
+WantedBy=multi-user.target

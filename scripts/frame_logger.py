@@ -87,7 +87,8 @@ def make_record(topic: str, up: gw_pb2.UplinkFrame) -> dict:
         "bw":   tx.modulation.lora.bandwidth,
         "rssi": rx.rssi,
         "snr":  round(rx.snr, 2),
-        "crc_ok": rx.crc_status == 1,
+        # Enum gw.CRCStatus : NO_CRC=0, BAD_CRC=1, CRC_OK=2
+        "crc_ok": rx.crc_status == gw_pb2.CRC_OK,
         "phy": phy.hex(),
     }
     rec.update(parse_phy(phy))

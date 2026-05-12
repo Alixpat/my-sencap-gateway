@@ -9,6 +9,11 @@ Thumbs.db
 # Claude Code local settings
 .claude/
 
+# Python venv
+.venv/
+__pycache__/
+*.pyc
+
 # Secrets / configs locales (à ne JAMAIS commiter)
 *.local.toml
 *.local.json

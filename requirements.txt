@@ -1,0 +1,6 @@
+# Dépendances Python pour les scripts d'administration ChirpStack
+# Installation :
+#   python3 -m venv .venv
+#   .venv/bin/pip install -r requirements.txt
+
+chirpstack-api==4.18.0

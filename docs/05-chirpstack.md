@@ -185,18 +185,40 @@ sudo systemctl restart lora-pkt-fwd
 `eu868/gateway/0016c0xxxxxxxxxx/event/stats`. C'est cette EUI qu'on déclare
 dans l'UI de ChirpStack (doc 06).
 
-## Accéder à l'interface
+## Accéder à ChirpStack
 
-Sur ton PC :
+ChirpStack v4 expose **l'API gRPC** et une UI web sur le même port `:8080`.
+Pour l'admin, on privilégie l'API (scriptable, reproductible). L'UI reste
+dispo pour le coup d'œil rapide :
 
 ```
 http://sensecap-gateway.local:8080
-# ou
-http://<ip-de-la-passerelle>:8080
+# ou http://<ip-de-la-passerelle>:8080
 ```
 
-Identifiants par défaut : `admin` / `admin`. **Change-les immédiatement**
-(menu utilisateur en haut à droite).
+Identifiants UI par défaut : `admin` / `admin` (à changer si tu comptes
+t'en servir).
+
+### Générer une API key globale
+
+Pour scripter ChirpStack, génère un token long-lived côté serveur :
+
+```bash
+sudo chirpstack -c /etc/chirpstack create-api-key --name "automation"
+```
+
+La commande retourne un `id` (UUID) et un `token` (JWT signé avec
+`[api].secret`). **Stocke le token comme un secret** — il a les droits
+admin globaux. Le dépôt s'attend à le trouver dans un fichier `.env`
+(gitignored) à la racine :
+
+```bash
+# .env
+CHIRPSTACK_SERVER=192.168.2.136:8080
+CHIRPSTACK_API_TOKEN=eyJ0eXAiOi...
+```
+
+Voir `scripts/register_gateway.py` (doc 06) pour un exemple d'utilisation.
 
 ## Activer le démarrage automatique
 

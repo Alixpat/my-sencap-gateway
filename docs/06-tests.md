@@ -196,6 +196,37 @@ with open("frames.ndjson") as f:
     frames = [json.loads(l) for l in f]
 ```
 
+### Rapport automatisé
+
+`scripts/analyze_archive.py` produit un rapport texte sur l'archive :
+
+```bash
+# Rapport complet
+.venv/bin/python scripts/analyze_archive.py /tmp/frames.ndjson
+
+# Fenêtre temporelle (24 h, 30 min, 7 j, ou ISO)
+.venv/bin/python scripts/analyze_archive.py frames.ndjson --since 24h
+
+# Focus sur un device récurrent
+.venv/bin/python scripts/analyze_archive.py frames.ndjson --dev-addr 260bed3c
+
+# Récupération + analyse en une commande
+scp pi@sensecap-gateway.local:/var/log/chirpstack-frames/frames.ndjson - \
+    | .venv/bin/python scripts/analyze_archive.py -
+```
+
+Le rapport identifie :
+- les **DevAddr récurrents**, avec FCnt, RSSI/SF/port, et inter-arrivée
+  (régulière vs irrégulière, σ < 5% = horloge précise) ;
+- les **JoinRequests** en boucle (DevEUI = AppEUI placeholder, rejeux
+  rapides) ;
+- l'**opérateur probable** via le NwkID extrait du DevAddr (Type 0..7
+  conforme spec LoRaWAN, table connue pour TTN et quelques opérateurs FR) ;
+- les **anomalies** : FCnt qui régresse / reste à 0, RSSI très haut
+  (device proche), placeholders ;
+- les EUI lisibles en **ASCII** (signatures « C_Mode0+ » des compteurs
+  Wize, suffixes « Agen » sur les flottes locales, etc.).
+
 ### Volume attendu
 
 ~200 octets par ligne NDJSON. Sur une moyenne observée de 18 trames/h

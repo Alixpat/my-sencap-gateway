@@ -1,0 +1,23 @@
+[Unit]
+Description=Logger des trames LoRaWAN du broker MQTT (NDJSON append)
+After=mosquitto.service chirpstack-gateway-bridge.service
+Wants=mosquitto.service
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+# Le venv est attendu sous /home/pi/frame-logger/.venv (cf doc 06 §archive).
+# Le dossier de log doit appartenir à pi (ou ajuster Group=).
+ExecStart=/home/pi/frame-logger/.venv/bin/python \
+    /home/pi/frame-logger/frame_logger.py \
+    --host 127.0.0.1 --port 1883 \
+    --output /var/log/chirpstack-frames/frames.ndjson
+Restart=on-failure
+RestartSec=5
+# Évite l'inondation des logs systemd : on a déjà l'archive NDJSON dédiée.
+StandardOutput=null
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

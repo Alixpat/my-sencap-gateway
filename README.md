@@ -37,6 +37,28 @@ Mosquitto sur le même Pi).
 - ChirpStack tout-en-un tient sur un Pi 4 sans problème côté CPU/RAM. Compte
   ~1 Go d'occupation disque et ~500 Mo de RAM utilisée au repos.
 
+## Accès distant (optionnel)
+
+Pour s'affranchir du LAN local, du DHCP et du port forwarding, on peut
+installer [Tailscale](https://tailscale.com/) sur la passerelle :
+
+```bash
+ssh pi@sensecap-gateway.local
+curl -fsSL https://tailscale.com/install.sh | sudo sh
+sudo tailscale up --hostname=sensecap-gateway
+# clique sur l'URL affichée pour authentifier la machine dans ton tailnet
+```
+
+Ensuite, depuis n'importe quelle machine du tailnet :
+
+```bash
+ssh pi@sensecap-gateway              # MagicDNS résout le nom court
+curl http://sensecap-gateway:8080    # ChirpStack UI / API
+```
+
+Et le `.env` du dépôt peut pointer sur `sensecap-gateway:8080` plutôt que
+l'IP LAN, les scripts gRPC marchent alors depuis n'importe où.
+
 ## Sources
 
 - Semtech `sx1302_hal` : https://github.com/Lora-net/sx1302_hal
